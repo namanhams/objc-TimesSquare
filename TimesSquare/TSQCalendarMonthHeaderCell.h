@@ -30,4 +30,7 @@
  */
 - (void)createHeaderLabels;
 
+- (NSString *) dateFormat;
+- (NSString *) headerLabelForDate:(NSDate *)referenceDate;
+
 @end

@@ -71,7 +71,7 @@ static const CGFloat TSQCalendarMonthHeaderCellMonthsHeight = 20.f;
         NSInteger ordinality = [self.calendar ordinalityOfUnit:NSDayCalendarUnit inUnit:NSWeekCalendarUnit forDate:referenceDate];
         UILabel *label = [[UILabel alloc] initWithFrame:self.frame];
         label.textAlignment = UITextAlignmentCenter;
-        label.text = [dayFormatter stringFromDate:referenceDate];
+        label.text = [self headerLabelForDate:referenceDate];
         label.font = [UIFont boldSystemFontOfSize:12.f];
         label.backgroundColor = self.backgroundColor;
         label.textColor = self.textColor;
@@ -89,6 +89,28 @@ static const CGFloat TSQCalendarMonthHeaderCellMonthsHeight = 20.f;
     self.textLabel.textColor = self.textColor;
     self.textLabel.shadowColor = [UIColor whiteColor];
     self.textLabel.shadowOffset = self.shadowOffset;
+}
+
+static NSString *defaultDateFormat = @"EEE";
+
+- (NSString *) dateFormat {
+    return defaultDateFormat;
+}
+
+- (NSString *) headerLabelForDate:(NSDate *)referenceDate {
+    static NSDateFormatter *dayFormatter = nil;
+    
+    if(!dayFormatter) {
+        dayFormatter = [[NSDateFormatter alloc] init];
+        dayFormatter.calendar = self.calendar;
+        
+        NSString *dateFormat = [self dateFormat];
+        if(dateFormat == nil)
+            dateFormat = defaultDateFormat;
+        dayFormatter.dateFormat = dateFormat;
+    }
+    
+    return [dayFormatter stringFromDate:referenceDate];
 }
 
 - (void)layoutSubviews;

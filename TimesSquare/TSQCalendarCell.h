@@ -53,11 +53,6 @@
  */
 + (CGFloat) cellHeight;
 
-/** The text color.
- 
- This is used for all text the cell draws; if a date is disabled, then it will draw in this color, but at 50% opacity.
- */
-@property (nonatomic, strong) UIColor *textColor;
 
 /** The text shadow offset.
  
