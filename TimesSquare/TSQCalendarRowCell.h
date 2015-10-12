@@ -17,12 +17,6 @@
  */
 @interface TSQCalendarRowCell : TSQCalendarCell
 
-/** @name State Properties Set by Calendar View */
-
-/** The date at the beginning of the week for this cell.
- 
- Notice that it might be before the `firstOfMonth` property or it might be after.
- */
 @property (nonatomic, strong) NSDate *beginningDate;
 
 @property (nonatomic, weak) id<TSQCalendarRowCellDelegate> delegate;

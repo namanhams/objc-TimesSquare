@@ -44,6 +44,10 @@
 
 @property (nonatomic, strong) TSQDateRange *selectedRange;
 
+@property (nonatomic, assign) BOOL clampToFirstOfMonth; // Default is false
+@property (nonatomic, assign) BOOL clampToLastOfMonth; // Default is false
+@property (nonatomic, assign) BOOL showDateFromPreviousOrNextMonth; // Default is false
+
 /** @name Calendar Configuration */
 
 /** The calendar type to use when displaying.
@@ -60,12 +64,6 @@
  The `TSQCalendarView` class, which does not retain the delegate, invokes each protocol method the delegate implements.
  */
 @property (nonatomic, weak) id<TSQCalendarViewDelegate> delegate;
-
-/** Whether to pin the header to the top of the view.
- 
- If you're trying to emulate the built-in calendar app, set this to `YES`. Default value is `NO`.
- */
-@property (nonatomic) BOOL pinsHeaderToTop;
 
 /** Whether or not the calendar snaps to begin a month at the top of its bounds.
  
@@ -117,6 +115,13 @@
 @param animated YES if you want to animate the change in position, NO if it should be immediate.
 */
 - (void)scrollDate:(NSDate *)date toPosition:(UITableViewScrollPosition)position animated:(BOOL)animated;
+
+- (NSDate *) firstDateOfMonthForDate:(NSDate *)date;
+- (NSDate *) lastDateOfMonthForDate:(NSDate *)date;
+- (NSInteger) weekOfMonthFromDate:(NSDate *)date;
+- (NSInteger) monthFromDate:(NSDate *)date;
+- (NSDate *) clampDate:(NSDate *)date toComponents:(NSUInteger)unitFlags;
+- (NSDate *) normalizeDateForDate:(NSDate *)date;
 
 @end
 
