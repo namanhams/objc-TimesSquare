@@ -37,7 +37,7 @@
 @property (nonatomic, strong) NSCalendar *calendar;
 
 
-@property (nonatomic, weak) id<TSQCalendarViewDelegate> delegate;
+@property (nonatomic, weak) IBOutlet id<TSQCalendarViewDelegate> delegate;
 
 /** Whether or not the calendar snaps to begin a month at the top of its bounds.
  

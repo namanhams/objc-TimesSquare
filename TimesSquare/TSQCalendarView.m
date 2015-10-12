@@ -170,10 +170,10 @@
     }
 
     _selectedRange = selectedRange;
-    _selectedRange.start = [self normalizeDateForDate:_selectedRange.start];
-    _selectedRange.end = [self normalizeDateForDate:_selectedRange.end];
     
     if(_selectedRange != nil) {
+        _selectedRange.start = [self normalizeDateForDate:_selectedRange.start];
+        _selectedRange.end = [self normalizeDateForDate:_selectedRange.end];
         NSInteger numberOfDates = [self.calendar components:NSCalendarUnitDay fromDate:_selectedRange.start toDate:_selectedRange.end options:0].day;
         NSDateComponents *components = [[NSDateComponents alloc] init];
         for(int i = 0; i <= numberOfDates; i++) {
