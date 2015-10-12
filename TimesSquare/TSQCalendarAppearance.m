@@ -8,11 +8,6 @@
 
 #import "TSQCalendarAppearance.h"
 
-@interface UIImage (Extension)
-+ (UIImage *) imageFromColor:(UIColor *)color;
-- (UIImage *)imageByApplyingAlpha:(CGFloat) alpha;
-@end
-
 @implementation TSQCalendarAppearance
 
 + (instancetype) defaultAppearance {

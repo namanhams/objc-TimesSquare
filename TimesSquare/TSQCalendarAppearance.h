@@ -42,3 +42,8 @@
 + (instancetype) defaultAppearance;
 
 @end
+
+@interface UIImage (Extension)
++ (UIImage *) imageFromColor:(UIColor *)color;
+- (UIImage *)imageByApplyingAlpha:(CGFloat) alpha;
+@end
