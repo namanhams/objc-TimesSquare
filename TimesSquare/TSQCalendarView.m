@@ -21,6 +21,11 @@
 @end
 
 
+@interface TSQDateRange ()
+@property (nonatomic, strong) NSDate *start;
+@property (nonatomic, strong) NSDate *end;
+@end
+
 @implementation TSQDateRange
 
 - (instancetype) initWithStartDate:(NSDate *)startDate endDate:(NSDate *)endDate {
@@ -165,6 +170,8 @@
     }
 
     _selectedRange = selectedRange;
+    _selectedRange.start = [self normalizeDateForDate:_selectedRange.start];
+    _selectedRange.end = [self normalizeDateForDate:_selectedRange.end];
     
     if(_selectedRange != nil) {
         NSInteger numberOfDates = [self.calendar components:NSCalendarUnitDay fromDate:_selectedRange.start toDate:_selectedRange.end options:0].day;
