@@ -26,27 +26,7 @@
  */
 @interface TSQCalendarView : UIView
 
-/** @name Date Setup */
-
-/** The earliest month the calendar view displays.
- 
- Set this property to any `NSDate`; `TSQCalendarView` will only look at the month and year.
- Must be set for the calendar to be useful.
- */
-@property (nonatomic, strong) NSDate *firstDate;
-
-/** The latest month the calendar view displays.
- 
- Set this property to any `NSDate`; `TSQCalendarView` will only look at the month and year.
- Must be set for the calendar to be useful.
- */
-@property (nonatomic, strong) NSDate *lastDate;
-
 @property (nonatomic, strong) TSQDateRange *selectedRange;
-
-@property (nonatomic, assign) BOOL clampToFirstOfMonth; // Default is false
-@property (nonatomic, assign) BOOL clampToLastOfMonth; // Default is false
-@property (nonatomic, assign) BOOL showDateFromPreviousOrNextMonth; // Default is false
 
 /** @name Calendar Configuration */
 
@@ -56,13 +36,7 @@
  */
 @property (nonatomic, strong) NSCalendar *calendar;
 
-/** @name Visual Configuration */
 
-/** The delegate of the calendar view.
- 
- The delegate must adopt the `TSQCalendarViewDelegate` protocol.
- The `TSQCalendarView` class, which does not retain the delegate, invokes each protocol method the delegate implements.
- */
 @property (nonatomic, weak) id<TSQCalendarViewDelegate> delegate;
 
 /** Whether or not the calendar snaps to begin a month at the top of its bounds.
@@ -99,23 +73,13 @@
 
 @property (nonatomic, strong) TSQCalendarAppearance *appearance;
 
-- (void) selectDate:(NSDate *)date;
+- (void) setFirstDate:(NSDate *)firstDate clampToFirstOfMonth:(BOOL)clampToFirstOfMonth;
+- (void) setLastDate:(NSDate *)lastDate clampToLastOfMonth:(BOOL)clampToLastOfMonth;
 
-/** Scrolls the receiver until the specified date month is completely visible.
-
- @param date A date that identifies the month that will be visible.
- @param animated YES if you want to animate the change in position, NO if it should be immediate.
- */
 - (void)scrollToDate:(NSDate *)date animated:(BOOL)animated;
-
-/** Scrolls the receiver until the specified date is at the specified position in the view.
-
-@param date A date that identifies the month that will be visible.
-@param position A UITableViewScroll Position, determining the position of the date after scroll is finished.
-@param animated YES if you want to animate the change in position, NO if it should be immediate.
-*/
 - (void)scrollDate:(NSDate *)date toPosition:(UITableViewScrollPosition)position animated:(BOOL)animated;
 
+// Date helpers
 - (NSDate *) firstDateOfMonthForDate:(NSDate *)date;
 - (NSDate *) lastDateOfMonthForDate:(NSDate *)date;
 - (NSInteger) weekOfMonthFromDate:(NSDate *)date;
@@ -131,23 +95,7 @@
 
 @optional
 
-/** @name Responding to Selection */
-
-/** Asks the delegate whether a particular date is selectable.
- 
- This method should be relatively efficient, as it is called repeatedly to appropriate enable and disable individual days on the calendar view.
- 
- @param calendarView The calendar view that is selecting a date.
- @param date Midnight on the date being selected.
- @return Whether or not the date is selectable.
- */
 - (BOOL)calendarView:(TSQCalendarView *)calendarView shouldSelectDate:(NSDate *)date;
-
-/** Tells the delegate that a particular date was selected.
- 
- @param calendarView The calendar view that is selecting a date.
- @param date Midnight on the date being selected.
- */
-- (void)calendarView:(TSQCalendarView *)calendarView didSelectDate:(NSDate *)date;
+- (void) calendarView:(TSQCalendarView *)calendarView didSelectRange:(TSQDateRange *)range;
 
 @end

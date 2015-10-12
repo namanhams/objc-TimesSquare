@@ -16,6 +16,8 @@
     NSDate *_selectedDate;
 }
 @property (nonatomic, strong) UITableView *tableView;
+@property (nonatomic, strong) NSDate *firstDate;
+@property (nonatomic, strong) NSDate *lastDate;
 @end
 
 
@@ -118,17 +120,17 @@
     [self.tableView setBackgroundColor:backgroundColor];
 }
 
-- (void)setFirstDate:(NSDate *)firstDate;
+- (void)setFirstDate:(NSDate *)firstDate clampToFirstOfMonth:(BOOL)clampToFirstOfMonth
 {
-    if(self.clampToFirstOfMonth)
+    if(clampToFirstOfMonth)
         _firstDate = [self firstDateOfMonthForDate:firstDate];
     else
         _firstDate = [self normalizeDateForDate:firstDate];
 }
 
-- (void)setLastDate:(NSDate *)lastDate;
+- (void)setLastDate:(NSDate *)lastDate clampToLastOfMonth:(BOOL)clampToLastOfMonth
 {
-    if(self.clampToLastOfMonth)
+    if(clampToLastOfMonth)
         _lastDate = [self lastDateOfMonthForDate:lastDate];
     else
         _lastDate = [self normalizeDateForDate:lastDate];
@@ -145,7 +147,6 @@
     
     _selectedDate = date;
 }
-
 
 - (void) setSelectedRange:(TSQDateRange *)selectedRange {
     if(_selectedRange == selectedRange)
@@ -433,6 +434,9 @@
         if([_selectedDate earlierDate:startOfDay] == _selectedDate) {
             TSQDateRange *range = [[TSQDateRange alloc] initWithStartDate:_selectedDate endDate:startOfDay];
             self.selectedRange = range;
+            
+            if([self.delegate respondsToSelector:@selector(calendarView:didSelectRange:)])
+                [self.delegate calendarView:self didSelectRange:range];
         }
         else {
             [self selectDate:startOfDay];
@@ -440,10 +444,6 @@
     }
     else {
         [self selectDate:startOfDay];
-    }
-    
-    if ([self.delegate respondsToSelector:@selector(calendarView:didSelectDate:)]) {
-        [self.delegate calendarView:self didSelectDate:startOfDay];
     }
 }
 
