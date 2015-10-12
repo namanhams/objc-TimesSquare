@@ -422,28 +422,29 @@
 
 - (void) rowCell:(TSQCalendarRowCell *)cell didSelectDate:(NSDate *)date {
     NSDate *startOfDay = [self clampDate:date toComponents:NSDayCalendarUnit|NSMonthCalendarUnit|NSYearCalendarUnit];
-    if ([self.delegate respondsToSelector:@selector(calendarView:shouldSelectDate:)] && ![self.delegate calendarView:self shouldSelectDate:startOfDay])
-        return;
-    
-    if(self.selectedRange != nil) {
-        [self selectDate:startOfDay];
-        return;
-    }
     
     if(_selectedDate != nil) {
         if([_selectedDate earlierDate:startOfDay] == _selectedDate) {
-            TSQDateRange *range = [[TSQDateRange alloc] initWithStartDate:_selectedDate endDate:startOfDay];
-            self.selectedRange = range;
-            
-            if([self.delegate respondsToSelector:@selector(calendarView:didSelectRange:)])
-                [self.delegate calendarView:self didSelectRange:range];
+            if(! [self.delegate respondsToSelector:@selector(calendarView:shouldSelectRangeSecondDate:)] ||
+                [self.delegate calendarView:self shouldSelectRangeSecondDate:startOfDay])
+            {
+                TSQDateRange *range = [[TSQDateRange alloc] initWithStartDate:_selectedDate endDate:startOfDay];
+                self.selectedRange = range;
+                
+                if([self.delegate respondsToSelector:@selector(calendarView:didSelectRange:)])
+                    [self.delegate calendarView:self didSelectRange:range];
+            }
         }
         else {
-            [self selectDate:startOfDay];
+            if (![self.delegate respondsToSelector:@selector(calendarView:shouldSelectRangeFirstDate:)] ||
+                [self.delegate calendarView:self shouldSelectRangeFirstDate:startOfDay])
+                [self selectDate:startOfDay];
         }
     }
     else {
-        [self selectDate:startOfDay];
+        if (![self.delegate respondsToSelector:@selector(calendarView:shouldSelectRangeFirstDate:)] ||
+            [self.delegate calendarView:self shouldSelectRangeFirstDate:startOfDay])
+            [self selectDate:startOfDay];
     }
 }
 

@@ -95,7 +95,8 @@
 
 @optional
 
-- (BOOL)calendarView:(TSQCalendarView *)calendarView shouldSelectDate:(NSDate *)date;
+- (BOOL)calendarView:(TSQCalendarView *)calendarView shouldSelectRangeFirstDate:(NSDate *)date;
+- (BOOL)calendarView:(TSQCalendarView *)calendarView shouldSelectRangeSecondDate:(NSDate *)date;
 - (void) calendarView:(TSQCalendarView *)calendarView didSelectRange:(TSQDateRange *)range;
 
 @end
