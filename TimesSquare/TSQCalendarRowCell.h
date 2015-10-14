@@ -18,18 +18,10 @@
 @interface TSQCalendarRowCell : TSQCalendarCell
 
 @property (nonatomic, strong) NSDate *beginningDate;
-
 @property (nonatomic, weak) id<TSQCalendarRowCellDelegate> delegate;
 
-/** Method to select a specific date within the week.
-
- This is funneled through and called by the calendar view, to facilitate deselection of other rows.
- 
- @param date The date to select, or nil to deselect all columns.
- */
 - (void)selectColumnForDate:(NSDate *)date;
 - (void)selectColumnForDate:(NSDate *)date isInBetween:(BOOL)inBetween;
-
 - (void) deselectAllColumns;
 
 @end

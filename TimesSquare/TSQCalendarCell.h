@@ -33,17 +33,11 @@
  */
 @property (nonatomic, readonly) NSUInteger daysInWeek;
 
-/** The calendar type we're displaying.
- 
- This is whatever the owning `TSQCalendarView`'s `calendar` property is set to; it's likely `[NSCalendar currentCalendar]`.
- */
-@property (nonatomic, strong) NSCalendar *calendar;
-
 /** The owning calendar view.
  
  This is a weak reference.
  */
-@property (nonatomic, weak) TSQCalendarView *calendarView;
+@property (nonatomic, readonly, weak) TSQCalendarView *calendarView;
 
 /** @name Display Properties */
 
@@ -73,7 +67,7 @@
  @param calendar The `NSCalendar` the cell is representing
  @param reuseIdentifier A string reuse identifier, as used by `UITableViewCell`
  */
-- (id)initWithCalendar:(NSCalendar *)calendar reuseIdentifier:(NSString *)reuseIdentifier;
+- (id)initWithCalendarView:(TSQCalendarView *)calendarView reuseIdentifier:(NSString *)reuseIdentifier;
 
 /** Seven-column layout helper.
  

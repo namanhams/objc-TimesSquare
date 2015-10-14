@@ -29,9 +29,9 @@
 
 @implementation TSQCalendarRowCell
 
-- (id)initWithCalendar:(NSCalendar *)calendar reuseIdentifier:(NSString *)reuseIdentifier;
+- (id)initWithCalendarView:(TSQCalendarView *)calendarView reuseIdentifier:(NSString *)reuseIdentifier
 {
-    self = [super initWithCalendar:calendar reuseIdentifier:reuseIdentifier];
+    self = [super initWithCalendarView:calendarView reuseIdentifier:reuseIdentifier];
     if (!self) {
         return nil;
     }
@@ -62,7 +62,6 @@
         return;
     
     date = [self.calendarView normalizeDateForDate:date];
-    
     _beginningDate = date;
     _currentMonth = [self.calendarView monthFromDate:date];
         
@@ -74,9 +73,9 @@
     // Calculate the start and end date
     NSDateComponents *comps = [[NSDateComponents alloc] init];
     comps.day = -beginIndex;
-    _startDate = [self.calendar dateByAddingComponents:comps toDate:date options:0];
+    _startDate = [self.calendarView.calendar dateByAddingComponents:comps toDate:date options:0];
     comps.day = self.daysInWeek - beginIndex - 1;
-    _endDate = [self.calendar dateByAddingComponents:comps toDate:date options:0];
+    _endDate = [self.calendarView.calendar dateByAddingComponents:comps toDate:date options:0];
     
     NSDateComponents *offset = [NSDateComponents new];
     offset.day = 1;
@@ -102,7 +101,7 @@
         
         button.enabled = ![self.delegate respondsToSelector:@selector(rowCell:shouldSelectDate:)] || [self.delegate rowCell:self shouldSelectDate:date];
         
-        NSDateComponents *thisDateComponents = [self.calendar components:NSDayCalendarUnit|NSMonthCalendarUnit|NSYearCalendarUnit fromDate:date];
+        NSDateComponents *thisDateComponents = [self.calendarView.calendar components:NSDayCalendarUnit|NSMonthCalendarUnit|NSYearCalendarUnit fromDate:date];
         if ([self.todayDateComponents isEqual:thisDateComponents]) {
             self.indexOfTodayButton = index;
             [button setTitleColor:self.calendarView.appearance.todayTextColor forState:UIControlStateNormal];
@@ -110,7 +109,7 @@
         }
         
         // Next date
-        date = [self.calendar dateByAddingComponents:offset toDate:date options:0];
+        date = [self.calendarView.calendar dateByAddingComponents:offset toDate:date options:0];
     }
 }
 
@@ -122,7 +121,7 @@
     NSInteger newIndexOfSelectedButton = -1;
     if (date) {
         if ([_startDate earlierDate:date] == _startDate && [_endDate laterDate:date] == _endDate) {
-            newIndexOfSelectedButton = [self.calendar component:NSCalendarUnitWeekday fromDate:date] - 1;
+            newIndexOfSelectedButton = [self indexOfButtonForDate:date];
             if (newIndexOfSelectedButton >= (NSInteger)self.daysInWeek) {
                 newIndexOfSelectedButton = -1;
             }
@@ -156,14 +155,14 @@
 }
 
 - (NSInteger) indexOfButtonForDate:(NSDate *)date {
-    return [self.calendar component:NSCalendarUnitWeekday fromDate:date] - 1;
+    return [self.calendarView.calendar ordinalityOfUnit:NSCalendarUnitDay inUnit:NSCalendarUnitWeekOfMonth forDate:date] - 1;
 }
 
 - (IBAction)dateButtonPressed:(id)sender;
 {
     NSDateComponents *offset = [NSDateComponents new];
     offset.day = [self.dayButtons indexOfObject:sender];
-    NSDate *selectedDate = [self.calendar dateByAddingComponents:offset toDate:_startDate options:0];
+    NSDate *selectedDate = [self.calendarView.calendar dateByAddingComponents:offset toDate:_startDate options:0];
     if([self.delegate respondsToSelector:@selector(rowCell:didSelectDate:)])
         [self.delegate rowCell:self didSelectDate:selectedDate];
 }
@@ -172,7 +171,7 @@
 {
     NSDateComponents *offset = [NSDateComponents new];
     offset.day = self.indexOfTodayButton;
-    NSDate *selectedDate = [self.calendar dateByAddingComponents:offset toDate:_startDate options:0];
+    NSDate *selectedDate = [self.calendarView.calendar dateByAddingComponents:offset toDate:_startDate options:0];
     if([self.delegate respondsToSelector:@selector(rowCell:didSelectDate:)])
         [self.delegate rowCell:self didSelectDate:selectedDate];
 }
@@ -192,8 +191,8 @@
 - (NSDateFormatter *)dayFormatter;
 {
     if (!_dayFormatter) {
-        _dayFormatter = [NSDateFormatter new];
-        _dayFormatter.calendar = self.calendar;
+        _dayFormatter = [[NSDateFormatter alloc] init];
+        _dayFormatter.calendar = self.calendarView.calendar;
         _dayFormatter.dateFormat = @"d";
     }
     return _dayFormatter;
@@ -202,8 +201,8 @@
 - (NSDateFormatter *)accessibilityFormatter;
 {
     if (!_accessibilityFormatter) {
-        _accessibilityFormatter = [NSDateFormatter new];
-        _accessibilityFormatter.calendar = self.calendar;
+        _accessibilityFormatter = [[NSDateFormatter alloc] init];
+        _accessibilityFormatter.calendar = self.calendarView.calendar;
         _accessibilityFormatter.dateStyle = NSDateFormatterLongStyle;
     }
     return _accessibilityFormatter;
@@ -212,7 +211,7 @@
 - (NSDateComponents *)todayDateComponents;
 {
     if (!_todayDateComponents) {
-        self.todayDateComponents = [self.calendar components:NSDayCalendarUnit|NSMonthCalendarUnit|NSYearCalendarUnit fromDate:[NSDate date]];
+        self.todayDateComponents = [self.calendarView.calendar components:NSDayCalendarUnit|NSMonthCalendarUnit|NSYearCalendarUnit fromDate:[NSDate date]];
     }
     return _todayDateComponents;
 }

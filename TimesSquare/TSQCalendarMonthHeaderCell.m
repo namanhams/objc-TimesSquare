@@ -8,29 +8,21 @@
 //  which Square, Inc. licenses this file to you.
 
 #import "TSQCalendarMonthHeaderCell.h"
-
+#import "TSQCalendarView.h"
 
 static const CGFloat TSQCalendarMonthHeaderCellMonthsHeight = 20.f;
 
 
 @interface TSQCalendarMonthHeaderCell ()
-
-@property (nonatomic, strong) NSDateFormatter *monthDateFormatter;
-
+@property (nonatomic, strong) NSArray *headerLabels;
 @end
 
 
 @implementation TSQCalendarMonthHeaderCell
 
-- (id)initWithCalendar:(NSCalendar *)calendar reuseIdentifier:(NSString *)reuseIdentifier;
+- (id)initWithCalendarView:(TSQCalendarView *)calendarView reuseIdentifier:(NSString *)reuseIdentifier;
 {
-    self = [super initWithCalendar:calendar reuseIdentifier:reuseIdentifier];
-    if (!self) {
-        return nil;
-    }
-    
-    [self createHeaderLabels];
-    
+    self = [super initWithCalendarView:calendarView reuseIdentifier:reuseIdentifier];
     return self;
 }
 
@@ -40,16 +32,12 @@ static const CGFloat TSQCalendarMonthHeaderCellMonthsHeight = 20.f;
     return 65.0f;
 }
 
-- (NSDateFormatter *)monthDateFormatter;
-{
-    if (!_monthDateFormatter) {
-        _monthDateFormatter = [NSDateFormatter new];
-        _monthDateFormatter.calendar = self.calendar;
-        
-        NSString *dateComponents = @"yyyyLLLL";
-        _monthDateFormatter.dateFormat = [NSDateFormatter dateFormatFromTemplate:dateComponents options:0 locale:[NSLocale currentLocale]];
+- (NSArray *) headerLabels {
+    if(!_headerLabels) {
+        [self createHeaderLabels];
     }
-    return _monthDateFormatter;
+    
+    return _headerLabels;
 }
 
 - (void)createHeaderLabels;
@@ -59,8 +47,8 @@ static const CGFloat TSQCalendarMonthHeaderCellMonthsHeight = 20.f;
     offset.day = 1;
     NSMutableArray *headerLabels = [NSMutableArray arrayWithCapacity:self.daysInWeek];
     
-    NSDateFormatter *dayFormatter = [NSDateFormatter new];
-    dayFormatter.calendar = self.calendar;
+    NSDateFormatter *dayFormatter = [[NSDateFormatter alloc] init];
+    dayFormatter.calendar = self.calendarView.calendar;
     dayFormatter.dateFormat = @"cccccc";
     
     for (NSUInteger index = 0; index < self.daysInWeek; index++) {
@@ -68,7 +56,7 @@ static const CGFloat TSQCalendarMonthHeaderCellMonthsHeight = 20.f;
     }
     
     for (NSUInteger index = 0; index < self.daysInWeek; index++) {
-        NSInteger ordinality = [self.calendar ordinalityOfUnit:NSDayCalendarUnit inUnit:NSWeekCalendarUnit forDate:referenceDate];
+        NSInteger ordinality = [self.calendarView.calendar ordinalityOfUnit:NSDayCalendarUnit inUnit:NSWeekCalendarUnit forDate:referenceDate];
         UILabel *label = [[UILabel alloc] initWithFrame:self.frame];
         label.textAlignment = UITextAlignmentCenter;
         label.text = [self headerLabelForDate:referenceDate];
@@ -81,7 +69,7 @@ static const CGFloat TSQCalendarMonthHeaderCellMonthsHeight = 20.f;
         headerLabels[ordinality - 1] = label;
         [self.contentView addSubview:label];
         
-        referenceDate = [self.calendar dateByAddingComponents:offset toDate:referenceDate options:0];
+        referenceDate = [self.calendarView.calendar dateByAddingComponents:offset toDate:referenceDate options:0];
     }
     
     self.headerLabels = headerLabels;
@@ -91,26 +79,8 @@ static const CGFloat TSQCalendarMonthHeaderCellMonthsHeight = 20.f;
     self.textLabel.shadowOffset = self.shadowOffset;
 }
 
-static NSString *defaultDateFormat = @"EEE";
-
-- (NSString *) dateFormat {
-    return defaultDateFormat;
-}
-
 - (NSString *) headerLabelForDate:(NSDate *)referenceDate {
-    static NSDateFormatter *dayFormatter = nil;
-    
-    if(!dayFormatter) {
-        dayFormatter = [[NSDateFormatter alloc] init];
-        dayFormatter.calendar = self.calendar;
-        
-        NSString *dateFormat = [self dateFormat];
-        if(dateFormat == nil)
-            dateFormat = defaultDateFormat;
-        dayFormatter.dateFormat = dateFormat;
-    }
-    
-    return [dayFormatter stringFromDate:referenceDate];
+    return [self.calendarView.weekDayFormatter stringFromDate:referenceDate];
 }
 
 - (void)layoutSubviews;
@@ -134,7 +104,7 @@ static NSString *defaultDateFormat = @"EEE";
 - (void)setFirstOfMonth:(NSDate *)firstOfMonth;
 {
     [super setFirstOfMonth:firstOfMonth];
-    self.textLabel.text = [self.monthDateFormatter stringFromDate:firstOfMonth];
+    self.textLabel.text = [self.calendarView.monthDateFormatter stringFromDate:firstOfMonth];
     self.accessibilityLabel = self.textLabel.text;
 }
 

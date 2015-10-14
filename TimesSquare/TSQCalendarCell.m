@@ -15,19 +15,25 @@
 
 @property (nonatomic, assign) NSLocaleLanguageDirection layoutDirection;
 
+/** The owning calendar view.
+ 
+ This is a weak reference.
+ */
+@property (nonatomic, weak) TSQCalendarView *calendarView;
 @end
 
 
 @implementation TSQCalendarCell
 
-- (id)initWithCalendar:(NSCalendar *)calendar reuseIdentifier:(NSString *)reuseIdentifier;
+- (id)initWithCalendarView:(TSQCalendarView *)calendarView reuseIdentifier:(NSString *)reuseIdentifier;
 {
     self = [self initWithStyle:UITableViewCellStyleDefault reuseIdentifier:reuseIdentifier];
     if (!self) {
         return nil;
     }
     
-    _calendar = calendar;
+    self.calendarView = calendarView;
+    
     NSString *languageCode = [[NSLocale currentLocale] objectForKey:NSLocaleLanguageCode];
     self.layoutDirection = [NSLocale characterDirectionForLanguage:languageCode];
     self.backgroundColor = [UIColor colorWithRed:0.84f green:0.85f blue:0.86f alpha:1.0f];
@@ -55,7 +61,7 @@
 {
     static NSUInteger daysInWeek = 0;
     if (daysInWeek == 0) {
-        daysInWeek = [self.calendar maximumRangeOfUnit:NSWeekdayCalendarUnit].length;
+        daysInWeek = [self.calendarView.calendar maximumRangeOfUnit:NSWeekdayCalendarUnit].length;
     }
     return daysInWeek;
 }

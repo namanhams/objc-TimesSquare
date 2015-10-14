@@ -36,6 +36,9 @@
  */
 @property (nonatomic, strong) NSCalendar *calendar;
 
+@property (nonatomic, strong) NSDateFormatter *monthDateFormatter;
+@property (nonatomic, strong) NSDateFormatter *weekDayFormatter;
+
 
 @property (nonatomic, weak) IBOutlet id<TSQCalendarViewDelegate> delegate;
 

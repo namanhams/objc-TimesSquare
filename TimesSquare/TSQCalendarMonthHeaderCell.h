@@ -15,22 +15,6 @@
  */
 @interface TSQCalendarMonthHeaderCell : TSQCalendarCell
 
-/** @name Day Labels */
-
-/** The day header labels.
- 
- The count is equal to the `daysInWeek` property, likely seven. You can position them in the call to `layoutViewsForColumnAtIndex:inRect:`.
- */
-@property (nonatomic, strong) NSArray *headerLabels;
-
-
-/** Creates the header labels.
- 
- If you want the text in your header labels to be something other than the short day format ("Mon Tue Wed" etc.), override this method, call `super`, and loop through `self.headerLabels`, changing their text.
- */
-- (void)createHeaderLabels;
-
-- (NSString *) dateFormat;
 - (NSString *) headerLabelForDate:(NSDate *)referenceDate;
 
 @end

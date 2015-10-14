@@ -89,9 +89,38 @@
 - (NSCalendar *)calendar;
 {
     if (!_calendar) {
-        self.calendar = [NSCalendar currentCalendar];
+        _calendar = [NSCalendar currentCalendar];
+        NSString *localeIdentifier = [[NSBundle mainBundle] preferredLocalizations].firstObject;
+        if(localeIdentifier)
+            _calendar.locale = [NSLocale localeWithLocaleIdentifier:localeIdentifier];
     }
     return _calendar;
+}
+
+- (NSDateFormatter *) monthDateFormatter;
+{
+    if (!_monthDateFormatter) {
+        _monthDateFormatter = [[NSDateFormatter alloc] init];
+        _monthDateFormatter.calendar = self.calendar;
+        _monthDateFormatter.locale = self.calendar.locale;
+        
+        NSString *template = @"yyyyLLLL";
+        _monthDateFormatter.dateFormat = [NSDateFormatter dateFormatFromTemplate:template options:0 locale:_monthDateFormatter.locale];
+    }
+    return _monthDateFormatter;
+}
+
+- (NSDateFormatter *) weekDayFormatter {
+    if(! _weekDayFormatter) {
+        _weekDayFormatter = [[NSDateFormatter alloc] init];
+        _weekDayFormatter.calendar = self.calendar;
+        _weekDayFormatter.locale = self.calendar.locale;
+        
+        NSString *template = @"EEE";
+        _weekDayFormatter.dateFormat = [NSDateFormatter dateFormatFromTemplate:template options:0 locale:_weekDayFormatter.locale];
+    }
+    
+    return _weekDayFormatter;
 }
 
 - (Class)headerCellClass;
@@ -210,9 +239,8 @@
 
 - (TSQCalendarMonthHeaderCell *)makeHeaderCellWithIdentifier:(NSString *)identifier;
 {
-    TSQCalendarMonthHeaderCell *cell = [[[self headerCellClass] alloc] initWithCalendar:self.calendar reuseIdentifier:identifier];
+    TSQCalendarMonthHeaderCell *cell = [[[self headerCellClass] alloc] initWithCalendarView:self reuseIdentifier:identifier];
     cell.backgroundColor = self.backgroundColor;
-    cell.calendarView = self;
     return cell;
 }
 
@@ -343,9 +371,8 @@
         static NSString *identifier = @"row";
         TSQCalendarRowCell *cell = [tableView dequeueReusableCellWithIdentifier:identifier];
         if (!cell) {
-            cell = [[[self rowCellClass] alloc] initWithCalendar:self.calendar reuseIdentifier:identifier];
+            cell = [[[self rowCellClass] alloc] initWithCalendarView:self reuseIdentifier:identifier];
             cell.backgroundColor = self.backgroundColor;
-            cell.calendarView = self;
             cell.delegate = self;
         }
         return cell;
