@@ -11,3 +11,4 @@
 #import "TSQCalendarRowCell.h"
 #import "TSQCalendarView.h"
 #import "TSQCalendarAppearance.h"
+#import "NSDate+TimeSquare.h"

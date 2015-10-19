@@ -11,6 +11,7 @@
 #import "TSQCalendarMonthHeaderCell.h"
 #import "TSQCalendarRowCell.h"
 #import "TSQCalendarAppearance.h"
+#import "NSDate+TimeSquare.h"
 
 @interface TSQCalendarView () <UITableViewDataSource, UITableViewDelegate, TSQCalendarRowCellDelegate> {
     NSDate *_selectedDate;
@@ -157,7 +158,7 @@
 - (void)setFirstDate:(NSDate *)firstDate clampToFirstOfMonth:(BOOL)clampToFirstOfMonth
 {
     if(clampToFirstOfMonth)
-        _firstDate = [self firstDateOfMonthForDate:firstDate];
+        _firstDate = [NSDate firstDateOfMonthForDate:firstDate];
     else
         _firstDate = [self normalizeDateForDate:firstDate];
 }
@@ -165,7 +166,7 @@
 - (void)setLastDate:(NSDate *)lastDate clampToLastOfMonth:(BOOL)clampToLastOfMonth
 {
     if(clampToLastOfMonth)
-        _lastDate = [self lastDateOfMonthForDate:lastDate];
+        _lastDate = [NSDate lastDateOfMonthForDate:lastDate];
     else
         _lastDate = [self normalizeDateForDate:lastDate];
 }
@@ -246,36 +247,8 @@
 
 #pragma mark Calendar calculations
 
-- (NSDate *) firstDateOfMonthForDate:(NSDate *)date {
-    return [self clampDate:date toComponents: NSCalendarUnitMonth | NSCalendarUnitYear];
-}
-
-- (NSDate *) lastDateOfMonthForDate:(NSDate *)date {
-    NSDate *firstOfMonth = [self firstDateOfMonthForDate:date];
-    NSDateComponents *offsetComponents = [[NSDateComponents alloc] init];
-    offsetComponents.month = 1;
-    offsetComponents.day = -1;
-    return [self.calendar dateByAddingComponents:offsetComponents toDate:firstOfMonth options:0];
-}
-
-- (NSInteger) weekOfMonthFromDate:(NSDate *)date {
-    NSDateComponents *comps = [self.calendar components:NSCalendarUnitWeekOfMonth fromDate:date];
-    return comps.weekOfMonth;
-}
-
-- (NSInteger) monthFromDate:(NSDate *)date {
-    NSDateComponents *comps = [self.calendar components:NSCalendarUnitMonth fromDate:date];
-    return comps.month;
-}
-
-- (NSDate *) clampDate:(NSDate *)date toComponents:(NSUInteger)unitFlags
-{
-    NSDateComponents *components = [self.calendar components:unitFlags fromDate:date];
-    return [self.calendar dateFromComponents:components];
-}
-
 - (NSDate *) normalizeDateForDate:(NSDate *)date {
-    return [self clampDate:date toComponents: NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear];
+    return [date clampToComponents: NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear];
 }
 
 - (NSDate *)firstDateOfMonthForSection:(NSInteger)section
@@ -283,7 +256,7 @@
     NSDateComponents *offset = [NSDateComponents new];
     offset.month = section;
     NSDate *dateOfMonth = [self.calendar dateByAddingComponents:offset toDate:self.firstDate options:0];
-    NSDate *firstDateOfMonth = [self firstDateOfMonthForDate:dateOfMonth];
+    NSDate *firstDateOfMonth = [NSDate firstDateOfMonthForDate:dateOfMonth];
     if([firstDateOfMonth earlierDate:self.firstDate] == firstDateOfMonth)
         firstDateOfMonth = self.firstDate;
     
@@ -292,7 +265,7 @@
 
 - (NSDate *) lastDateOfMonthForSection:(NSInteger)section {
     NSDate *firstDate = [self firstDateOfMonthForSection:section];
-    NSDate *lastDate = [self lastDateOfMonthForDate:firstDate];
+    NSDate *lastDate = [NSDate lastDateOfMonthForDate:firstDate];
     if([lastDate laterDate:self.lastDate] == lastDate)
         lastDate = self.lastDate;
     return lastDate;
@@ -321,8 +294,8 @@
     NSInteger section = [self sectionForDate:date];
     
     NSDate *firstDateOfMonth = [self firstDateOfMonthForSection:section];
-    NSInteger firstWeek = [self weekOfMonthFromDate:firstDateOfMonth];
-    NSInteger targetWeek = [self weekOfMonthFromDate:date];
+    NSInteger firstWeek = firstDateOfMonth.weekOfMonth;
+    NSInteger targetWeek = date.weekOfMonth;
     NSInteger row = targetWeek - firstWeek + 1; // add 1 for the section header
     
     return [NSIndexPath indexPathForRow:row inSection:section];
@@ -348,8 +321,8 @@
 {
     NSDate *firstDate = [self firstDateOfMonthForSection:section];
     NSDate *lastDate = [self lastDateOfMonthForSection:section];
-    NSInteger firstWeek = [self weekOfMonthFromDate:firstDate];
-    NSInteger lastWeek = [self weekOfMonthFromDate:lastDate];
+    NSInteger firstWeek = firstDate.weekOfMonth;
+    NSInteger lastWeek = lastDate.weekOfMonth;
     NSInteger weeks = lastWeek - firstWeek + 1;
     return weeks + 1; // add 1 for section header
 }
@@ -455,7 +428,7 @@
 }
 
 - (void) rowCell:(TSQCalendarRowCell *)cell didSelectDate:(NSDate *)date {
-    NSDate *startOfDay = [self clampDate:date toComponents:NSDayCalendarUnit|NSMonthCalendarUnit|NSYearCalendarUnit];
+    NSDate *startOfDay = [self normalizeDateForDate:date];
     
     if(_selectedDate != nil) {
         if([_selectedDate earlierDate:startOfDay] == _selectedDate) {

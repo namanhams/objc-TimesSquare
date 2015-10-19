@@ -10,6 +10,7 @@
 #import "TSQCalendarRowCell.h"
 #import "TSQCalendarView.h"
 #import "TSQCalendarAppearance.h"
+#import "NSDate+TimeSquare.h"
 
 @interface TSQCalendarRowCell () {
     NSInteger _currentMonth;
@@ -63,7 +64,7 @@
     
     date = [self.calendarView normalizeDateForDate:date];
     _beginningDate = date;
-    _currentMonth = [self.calendarView monthFromDate:date];
+    _currentMonth = date.month;
         
     if (!self.dayButtons)
         [self createDayButtons];
@@ -85,7 +86,7 @@
     for (NSUInteger index = 0; index < self.daysInWeek; index++) {
         UIButton *button = self.dayButtons[index];
         
-        if(index < beginIndex || [self.calendarView monthFromDate:date] != _currentMonth) {
+        if(index < beginIndex || date.month != _currentMonth) {
             button.hidden = true;
             continue;
         }

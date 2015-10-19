@@ -83,11 +83,6 @@
 - (void)scrollDate:(NSDate *)date toPosition:(UITableViewScrollPosition)position animated:(BOOL)animated;
 
 // Date helpers
-- (NSDate *) firstDateOfMonthForDate:(NSDate *)date;
-- (NSDate *) lastDateOfMonthForDate:(NSDate *)date;
-- (NSInteger) weekOfMonthFromDate:(NSDate *)date;
-- (NSInteger) monthFromDate:(NSDate *)date;
-- (NSDate *) clampDate:(NSDate *)date toComponents:(NSUInteger)unitFlags;
 - (NSDate *) normalizeDateForDate:(NSDate *)date;
 
 @end
