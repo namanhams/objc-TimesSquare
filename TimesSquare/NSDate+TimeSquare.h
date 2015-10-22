@@ -16,5 +16,6 @@
 - (NSInteger) weekOfMonth;
 - (NSInteger) month;
 - (NSDate *) clampToComponents:(NSUInteger)unitFlags;
+- (NSInteger) numberOfDaysFromDate:(NSDate *)date;
 
 @end

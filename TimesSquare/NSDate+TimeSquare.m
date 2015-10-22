@@ -12,8 +12,10 @@
 
 static NSCalendar *calendar = nil;
 
-+ (void) initialize {
-    if(self == [NSDate self]) {
++ (void) load {
+    [super load];
+    
+    if(calendar == nil) {
         calendar = [NSCalendar currentCalendar];
         NSString *localeIdentifier = [[NSBundle mainBundle] preferredLocalizations].firstObject;
         if(localeIdentifier)
@@ -49,5 +51,8 @@ static NSCalendar *calendar = nil;
     return [calendar dateFromComponents:components];
 }
 
+- (NSInteger) numberOfDaysFromDate:(NSDate *)date {
+    return [calendar components:NSCalendarUnitDay fromDate:date toDate:self options:0].day;
+}
 
 @end
