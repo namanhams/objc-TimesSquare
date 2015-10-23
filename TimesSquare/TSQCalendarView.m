@@ -19,6 +19,7 @@
 @property (nonatomic, strong) UITableView *tableView;
 @property (nonatomic, strong) NSDate *firstDate;
 @property (nonatomic, strong) NSDate *lastDate;
+@property (nonatomic, strong) NSLocale *locale;
 @end
 
 
@@ -87,13 +88,23 @@
     _tableView.delegate = nil;
 }
 
+- (NSLocale *) locale {
+    if(!_locale) {
+        NSString *localeIdentifier = [[NSBundle mainBundle] preferredLocalizations].firstObject;
+        if(localeIdentifier)
+            _locale = [NSLocale localeWithLocaleIdentifier:localeIdentifier];
+        else
+            _locale = [NSLocale currentLocale];
+    }
+    
+    return _locale;
+}
+
 - (NSCalendar *)calendar;
 {
     if (!_calendar) {
         _calendar = [NSCalendar currentCalendar];
-        NSString *localeIdentifier = [[NSBundle mainBundle] preferredLocalizations].firstObject;
-        if(localeIdentifier)
-            _calendar.locale = [NSLocale localeWithLocaleIdentifier:localeIdentifier];
+        _calendar.locale = self.locale;
     }
     return _calendar;
 }
@@ -103,10 +114,10 @@
     if (!_monthDateFormatter) {
         _monthDateFormatter = [[NSDateFormatter alloc] init];
         _monthDateFormatter.calendar = self.calendar;
-        _monthDateFormatter.locale = self.calendar.locale;
+        _monthDateFormatter.locale = self.locale;
         
-        NSString *template = @"yyyyLLLL";
-        _monthDateFormatter.dateFormat = [NSDateFormatter dateFormatFromTemplate:template options:0 locale:_monthDateFormatter.locale];
+        NSString *template = @"yyyyMMM";
+        _monthDateFormatter.dateFormat = [NSDateFormatter dateFormatFromTemplate:template options:0 locale:self.locale];
     }
     return _monthDateFormatter;
 }
@@ -115,10 +126,10 @@
     if(! _weekDayFormatter) {
         _weekDayFormatter = [[NSDateFormatter alloc] init];
         _weekDayFormatter.calendar = self.calendar;
-        _weekDayFormatter.locale = self.calendar.locale;
+        _weekDayFormatter.locale = self.locale;
         
         NSString *template = @"EEE";
-        _weekDayFormatter.dateFormat = [NSDateFormatter dateFormatFromTemplate:template options:0 locale:_weekDayFormatter.locale];
+        _weekDayFormatter.dateFormat = [NSDateFormatter dateFormatFromTemplate:template options:0 locale:self.locale];
     }
     
     return _weekDayFormatter;
