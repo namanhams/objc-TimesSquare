@@ -18,6 +18,7 @@
     instance.inBetweenTextColor = instance.normalTextColor;
     instance.selectedBackgroundImage = [UIImage imageFromColor:[UIColor blueColor]];
     instance.inBetweenBackgroundImage = [instance.selectedBackgroundImage imageByApplyingAlpha:0.2];
+    instance.dateFont = [UIFont systemFontOfSize:14];
     return instance;
 }
 

@@ -39,6 +39,8 @@
 
 @property (nonatomic, strong) UIColor *inBetweenTextColor;
 
+@property (nonatomic, strong) UIFont *dateFont;
+
 + (instancetype) defaultAppearance;
 
 @end

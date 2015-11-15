@@ -98,6 +98,7 @@
         NSString *accessibilityLabel = [self.accessibilityFormatter stringFromDate:date];
         [button setTitle:title forState:UIControlStateNormal];
         [button setTitleColor:self.calendarView.appearance.normalTextColor forState:UIControlStateNormal];
+        button.titleLabel.font = self.calendarView.appearance.dateFont;
         [button setAccessibilityLabel:accessibilityLabel];
         
         button.enabled = ![self.delegate respondsToSelector:@selector(rowCell:shouldSelectDate:)] || [self.delegate rowCell:self shouldSelectDate:date];
