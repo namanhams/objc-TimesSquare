@@ -46,11 +46,8 @@
     for (NSUInteger index = 0; index < self.daysInWeek; index++) {
         UIButton *button = [[UIButton alloc] initWithFrame:self.contentView.bounds];
         [button addTarget:self action:@selector(dateButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-        button.titleLabel.font = [UIFont boldSystemFontOfSize:19.f];
         button.titleLabel.shadowOffset = self.shadowOffset;
         button.adjustsImageWhenDisabled = NO;
-        [button setTitleColor:self.calendarView.appearance.normalTextColor forState:UIControlStateNormal];
-        
         [dayButtons addObject:button];
         [self.contentView addSubview:button];
     }
@@ -97,8 +94,7 @@
         NSString *title = [self.dayFormatter stringFromDate:date];
         NSString *accessibilityLabel = [self.accessibilityFormatter stringFromDate:date];
         [button setTitle:title forState:UIControlStateNormal];
-        [button setTitleColor:self.calendarView.appearance.normalTextColor forState:UIControlStateNormal];
-        button.titleLabel.font = self.calendarView.appearance.dateFont;
+        [self.calendarView.appearanceDelegate configureButton:button forNormalDate:date];
         [button setAccessibilityLabel:accessibilityLabel];
         
         button.enabled = ![self.delegate respondsToSelector:@selector(rowCell:shouldSelectDate:)] || [self.delegate rowCell:self shouldSelectDate:date];
@@ -106,8 +102,7 @@
         NSDateComponents *thisDateComponents = [self.calendarView.calendar components:NSDayCalendarUnit|NSMonthCalendarUnit|NSYearCalendarUnit fromDate:date];
         if ([self.todayDateComponents isEqual:thisDateComponents]) {
             self.indexOfTodayButton = index;
-            [button setTitleColor:self.calendarView.appearance.todayTextColor forState:UIControlStateNormal];
-            [button setBackgroundImage:self.calendarView.appearance.todayBackgroundImage forState:UIControlStateNormal];
+            [self.calendarView.appearanceDelegate configureButtonForToday:button];
         }
         
         // Next date
@@ -133,12 +128,10 @@
     if (newIndexOfSelectedButton >= 0) {
         UIButton *button = self.dayButtons[newIndexOfSelectedButton];
         if(inBetween) {
-            [button setTitleColor:self.calendarView.appearance.inBetweenTextColor forState:UIControlStateNormal];
-            [button setBackgroundImage:self.calendarView.appearance.inBetweenBackgroundImage forState:UIControlStateNormal];
+            [self.calendarView.appearanceDelegate configureButton:button forInBetweenDay:date];
         }
         else {
-            [button setTitleColor:self.calendarView.appearance.selectedTextColor forState:UIControlStateNormal];
-            [button setBackgroundImage:self.calendarView.appearance.selectedBackgroundImage forState:UIControlStateNormal];
+            [self.calendarView.appearanceDelegate configureButton:button forSelectedDate:date];
         }
     }
 }
@@ -151,8 +144,7 @@
 - (void) deselectAllColumns {
     for(int i = 0; i < self.dayButtons.count; i++) {
         UIButton *button = self.dayButtons[i];
-        [button setTitleColor:self.calendarView.appearance.normalTextColor forState:UIControlStateNormal];
-        [button setBackgroundImage:self.calendarView.appearance.normalBackgroundImage forState:UIControlStateNormal];
+        [self.calendarView.appearanceDelegate configureButton:button forNormalDate:nil];
     }
 }
 

@@ -9,43 +9,40 @@
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
 
-@interface TSQCalendarAppearance : NSObject
+@protocol TSQCalendarAppearanceDelegate <NSObject>
+@optional
+- (void) configureButton:(UIButton *)button forSelectedDate:(NSDate *)date;
+- (void) configureButtonForToday:(UIButton *)button;
+- (void) configureButton:(UIButton *)button forNormalDate:(NSDate *)date;
+- (void) configureButton:(UIButton *)button forInBetweenDay:(NSDate *)date;
+@end
+
+@interface TSQCalendarAppearance : NSObject <TSQCalendarAppearanceDelegate>
 
 /** @name Images */
 
 @property (nonatomic, strong) UIImage *rowBackgroundImage;
 
-/** The background image for a day that's selected.
- 
- This is blue in the system's built-in Calendar app. You probably want to use a stretchable image.
- */
 @property (nonatomic, strong) UIImage *selectedBackgroundImage;
-
-/** The background image for a day that's "today".
- 
- This is dark gray in the system's built-in Calendar app. You probably want to use a stretchable image.
- */
 @property (nonatomic, strong) UIImage *todayBackgroundImage;
-
 @property (nonatomic, strong) UIImage *normalBackgroundImage;
-
 @property (nonatomic, strong) UIImage *inBetweenBackgroundImage;
 
+@property (nonatomic, strong) UIColor *selectedBackgroundColor;
+@property (nonatomic, strong) UIColor *todayBackgroundColor;
+@property (nonatomic, strong) UIColor *normalBackgroundColor;
+@property (nonatomic, strong) UIColor *inBetweenBackgroundColor;
+
 @property (nonatomic, strong) UIColor *selectedTextColor;
-
 @property (nonatomic, strong) UIColor *todayTextColor;
-
 @property (nonatomic, strong) UIColor *normalTextColor;
-
 @property (nonatomic, strong) UIColor *inBetweenTextColor;
 
 @property (nonatomic, strong) UIFont *dateFont;
-
-+ (instancetype) defaultAppearance;
 
 @end
 
 @interface UIImage (Extension)
 + (UIImage *) imageFromColor:(UIColor *)color;
-- (UIImage *)imageByApplyingAlpha:(CGFloat) alpha;
+- (UIImage *) imageByApplyingAlpha:(CGFloat) alpha;
 @end

@@ -11,7 +11,7 @@
 
 
 @protocol TSQCalendarViewDelegate;
-
+@protocol TSQCalendarAppearanceDelegate;
 @class TSQCalendarAppearance;
 
 @interface TSQDateRange : NSObject
@@ -25,6 +25,8 @@
  The implementation and usage are very similar to `UITableView`: the app provides reusable cells via a data source and controls behavior via a delegate. See `TSQCalendarCell` for a cell superclass.
  */
 @interface TSQCalendarView : UIView
+
+@property (nonatomic, strong) UITableView *tableView;
 
 @property (nonatomic, strong) TSQDateRange *selectedRange;
 
@@ -74,7 +76,7 @@
  */
 @property (nonatomic, strong) Class rowCellClass;
 
-@property (nonatomic, strong) TSQCalendarAppearance *appearance;
+@property (nonatomic, strong) id<TSQCalendarAppearanceDelegate> appearanceDelegate;
 
 - (void) setFirstDate:(NSDate *)firstDate clampToFirstOfMonth:(BOOL)clampToFirstOfMonth;
 - (void) setLastDate:(NSDate *)lastDate clampToLastOfMonth:(BOOL)clampToLastOfMonth;

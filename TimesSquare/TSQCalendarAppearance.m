@@ -10,16 +10,56 @@
 
 @implementation TSQCalendarAppearance
 
-+ (instancetype) defaultAppearance {
-    TSQCalendarAppearance *instance = [[TSQCalendarAppearance alloc] init];
-    instance.normalTextColor = [UIColor darkGrayColor];
-    instance.todayTextColor = [UIColor blueColor];
-    instance.selectedTextColor = [UIColor whiteColor];
-    instance.inBetweenTextColor = instance.normalTextColor;
-    instance.selectedBackgroundImage = [UIImage imageFromColor:[UIColor blueColor]];
-    instance.inBetweenBackgroundImage = [instance.selectedBackgroundImage imageByApplyingAlpha:0.2];
-    instance.dateFont = [UIFont systemFontOfSize:14];
-    return instance;
+- (id) init {
+    self.normalTextColor = [UIColor darkGrayColor];
+    self.todayTextColor = [UIColor blueColor];
+    self.selectedTextColor = [UIColor whiteColor];
+    self.inBetweenTextColor = self.normalTextColor;
+    
+    self.selectedBackgroundColor = [UIColor blueColor];
+    self.inBetweenBackgroundColor = [self.selectedBackgroundColor colorWithAlphaComponent:0.2];
+    self.dateFont = [UIFont systemFontOfSize:14];
+    return self;
+}
+
+- (void) configureButton:(UIButton *)button forSelectedDate:(NSDate *)date {
+    if(self.selectedBackgroundImage)
+        [button setBackgroundImage:self.selectedBackgroundImage forState:UIControlStateNormal];
+    else
+        [button setBackgroundColor:self.selectedBackgroundColor];
+    
+    [button setTitleColor:self.selectedTextColor forState:UIControlStateNormal];
+    [button.titleLabel setFont:self.dateFont];
+}
+
+- (void) configureButtonForToday:(UIButton *)button {
+    if(self.todayBackgroundImage)
+        [button setBackgroundImage:self.todayBackgroundImage forState:UIControlStateNormal];
+    else
+        [button setBackgroundColor:self.todayBackgroundColor];
+    
+    [button setTitleColor:self.todayTextColor forState:UIControlStateNormal];
+    [button.titleLabel setFont:self.dateFont];
+}
+
+- (void) configureButton:(UIButton *)button forNormalDate:(NSDate *)date {
+    if(self.normalBackgroundImage)
+        [button setBackgroundImage:self.normalBackgroundImage forState:UIControlStateNormal];
+    else
+        [button setBackgroundColor:self.normalBackgroundColor];
+    
+    [button setTitleColor:self.normalTextColor forState:UIControlStateNormal];
+    [button.titleLabel setFont:self.dateFont];
+}
+
+- (void) configureButton:(UIButton *)button forInBetweenDay:(NSDate *)date {
+    if(self.inBetweenBackgroundImage)
+        [button setBackgroundImage:self.inBetweenBackgroundImage forState:UIControlStateNormal];
+    else
+        [button setBackgroundColor:self.inBetweenBackgroundColor];
+    
+    [button setTitleColor:self.inBetweenTextColor forState:UIControlStateNormal];
+    [button.titleLabel setFont:self.dateFont];
 }
 
 @end
