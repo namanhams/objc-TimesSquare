@@ -16,6 +16,7 @@
 @interface TSQCalendarView () <UITableViewDataSource, UITableViewDelegate, TSQCalendarRowCellDelegate> {
     NSDate *_selectedDate;
 }
+@property (nonatomic, strong) NSCalendar *calendar;
 @property (nonatomic, strong) NSDate *firstDate;
 @property (nonatomic, strong) NSDate *lastDate;
 @property (nonatomic, strong) NSLocale *locale;

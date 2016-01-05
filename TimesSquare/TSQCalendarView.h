@@ -36,7 +36,7 @@
  
  If not set, this defaults to `[NSCalendar currentCalendar]`.
  */
-@property (nonatomic, strong) NSCalendar *calendar;
+@property (nonatomic, readonly, strong) NSCalendar *calendar;
 
 @property (nonatomic, strong) NSDateFormatter *monthDateFormatter;
 @property (nonatomic, strong) NSDateFormatter *weekDayFormatter;
