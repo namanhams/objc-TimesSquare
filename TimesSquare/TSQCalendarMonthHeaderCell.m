@@ -9,6 +9,7 @@
 
 #import "TSQCalendarMonthHeaderCell.h"
 #import "TSQCalendarView.h"
+#import "TSQCalendarConfiguration.h"
 
 static const CGFloat TSQCalendarMonthHeaderCellMonthsHeight = 20.f;
 
@@ -47,8 +48,12 @@ static const CGFloat TSQCalendarMonthHeaderCellMonthsHeight = 20.f;
     offset.day = 1;
     NSMutableArray *headerLabels = [NSMutableArray arrayWithCapacity:self.daysInWeek];
     
+    NSCalendar *calendar = self.calendarView.configuration.calendar;
+    NSLocale *locale = self.calendarView.configuration.locale;
+    
     NSDateFormatter *dayFormatter = [[NSDateFormatter alloc] init];
-    dayFormatter.calendar = self.calendarView.calendar;
+    dayFormatter.calendar = calendar;
+    dayFormatter.locale = locale;
     dayFormatter.dateFormat = @"cccccc";
     
     for (NSUInteger index = 0; index < self.daysInWeek; index++) {
@@ -56,7 +61,7 @@ static const CGFloat TSQCalendarMonthHeaderCellMonthsHeight = 20.f;
     }
     
     for (NSUInteger index = 0; index < self.daysInWeek; index++) {
-        NSInteger ordinality = [self.calendarView.calendar ordinalityOfUnit:NSDayCalendarUnit inUnit:NSWeekCalendarUnit forDate:referenceDate];
+        NSInteger ordinality = [calendar ordinalityOfUnit:NSDayCalendarUnit inUnit:NSWeekCalendarUnit forDate:referenceDate];
         UILabel *label = [[UILabel alloc] initWithFrame:self.frame];
         label.textAlignment = UITextAlignmentCenter;
         label.text = [self headerLabelForDate:referenceDate];
@@ -69,7 +74,7 @@ static const CGFloat TSQCalendarMonthHeaderCellMonthsHeight = 20.f;
         headerLabels[ordinality - 1] = label;
         [self.contentView addSubview:label];
         
-        referenceDate = [self.calendarView.calendar dateByAddingComponents:offset toDate:referenceDate options:0];
+        referenceDate = [calendar dateByAddingComponents:offset toDate:referenceDate options:0];
     }
     
     self.headerLabels = headerLabels;

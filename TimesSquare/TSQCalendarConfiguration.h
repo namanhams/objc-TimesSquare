@@ -1,5 +1,5 @@
 //
-//  TSQCalendarAppearance.h
+//  TSQCalendarConfiguration.h
 //  TimesSquare
 //
 //  Created by Pham Hoang Le on 9/10/15.
@@ -9,17 +9,11 @@
 #import <UIKit/UIKit.h>
 #import <Foundation/Foundation.h>
 
-@protocol TSQCalendarAppearanceDelegate <NSObject>
-@optional
-- (void) configureButton:(UIButton *)button forSelectedDate:(NSDate *)date;
-- (void) configureButtonForToday:(UIButton *)button;
-- (void) configureButton:(UIButton *)button forNormalDate:(NSDate *)date;
-- (void) configureButton:(UIButton *)button forInBetweenDay:(NSDate *)date;
-@end
+@interface TSQCalendarConfiguration : NSObject
 
-@interface TSQCalendarAppearance : NSObject <TSQCalendarAppearanceDelegate>
-
-/** @name Images */
+//
+//  UI configuration
+//
 
 @property (nonatomic, strong) UIImage *rowBackgroundImage;
 
@@ -39,6 +33,14 @@
 @property (nonatomic, strong) UIColor *inBetweenTextColor;
 
 @property (nonatomic, strong) UIFont *dateFont;
+
+- (void) configureButton:(UIButton *)button forSelectedDate:(NSDate *)date;
+- (void) configureButtonForToday:(UIButton *)button;
+- (void) configureButton:(UIButton *)button forNormalDate:(NSDate *)date;
+- (void) configureButton:(UIButton *)button forInBetweenDay:(NSDate *)date;
+
+@property (nonatomic, strong) NSCalendar *calendar;
+@property (nonatomic, strong) NSLocale *locale;
 
 @end
 

@@ -1,16 +1,19 @@
 //
-//  TSQCalendarAppearance.m
+//  TSQCalendarConfiguration.m
 //  TimesSquare
 //
 //  Created by Pham Hoang Le on 9/10/15.
 //  Copyright © 2015 Square. All rights reserved.
 //
 
-#import "TSQCalendarAppearance.h"
+#import "TSQCalendarConfiguration.h"
 
-@implementation TSQCalendarAppearance
+@implementation TSQCalendarConfiguration
 
 - (id) init {
+    self.calendar = [NSCalendar currentCalendar];
+    self.locale = [NSLocale currentLocale];
+    
     self.normalTextColor = [UIColor darkGrayColor];
     self.todayTextColor = [UIColor blueColor];
     self.selectedTextColor = [UIColor whiteColor];
@@ -19,6 +22,7 @@
     self.selectedBackgroundColor = [UIColor blueColor];
     self.inBetweenBackgroundColor = [self.selectedBackgroundColor colorWithAlphaComponent:0.2];
     self.dateFont = [UIFont systemFontOfSize:14];
+    
     return self;
 }
 

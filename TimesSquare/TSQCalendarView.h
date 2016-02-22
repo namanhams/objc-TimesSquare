@@ -11,8 +11,8 @@
 
 
 @protocol TSQCalendarViewDelegate;
-@protocol TSQCalendarAppearanceDelegate;
-@class TSQCalendarAppearance;
+@protocol TSQCalendarConfigurationDelegate;
+@class TSQCalendarConfiguration;
 
 @interface TSQDateRange : NSObject
 @property (nonatomic, readonly) NSDate *start;
@@ -30,17 +30,8 @@
 
 @property (nonatomic, strong) TSQDateRange *selectedRange;
 
-/** @name Calendar Configuration */
-
-/** The calendar type to use when displaying.
- 
- If not set, this defaults to `[NSCalendar currentCalendar]`.
- */
-@property (nonatomic, readonly, strong) NSCalendar *calendar;
-
 @property (nonatomic, strong) NSDateFormatter *monthDateFormatter;
 @property (nonatomic, strong) NSDateFormatter *weekDayFormatter;
-
 
 @property (nonatomic, weak) IBOutlet id<TSQCalendarViewDelegate> delegate;
 
@@ -76,7 +67,7 @@
  */
 @property (nonatomic, strong) Class rowCellClass;
 
-@property (nonatomic, strong) id<TSQCalendarAppearanceDelegate> appearanceDelegate;
+@property (nonatomic, strong) TSQCalendarConfiguration *configuration;
 
 - (void) setFirstDate:(NSDate *)firstDate clampToFirstOfMonth:(BOOL)clampToFirstOfMonth;
 - (void) setLastDate:(NSDate *)lastDate clampToLastOfMonth:(BOOL)clampToLastOfMonth;

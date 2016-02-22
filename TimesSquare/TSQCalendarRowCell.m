@@ -9,7 +9,7 @@
 
 #import "TSQCalendarRowCell.h"
 #import "TSQCalendarView.h"
-#import "TSQCalendarAppearance.h"
+#import "TSQCalendarConfiguration.h"
 #import "NSDate+TimeSquare.h"
 
 @interface TSQCalendarRowCell () {
@@ -60,9 +60,12 @@
         return;
     
     date = [self.calendarView normalizeDateForDate:date];
+    
     _beginningDate = date;
     _currentMonth = date.month;
-        
+    
+    NSCalendar *calendar = self.calendarView.configuration.calendar;
+    
     if (!self.dayButtons)
         [self createDayButtons];
     
@@ -71,9 +74,9 @@
     // Calculate the start and end date
     NSDateComponents *comps = [[NSDateComponents alloc] init];
     comps.day = -beginIndex;
-    _startDate = [self.calendarView.calendar dateByAddingComponents:comps toDate:date options:0];
+    _startDate = [calendar dateByAddingComponents:comps toDate:date options:0];
     comps.day = self.daysInWeek - beginIndex - 1;
-    _endDate = [self.calendarView.calendar dateByAddingComponents:comps toDate:date options:0];
+    _endDate = [calendar dateByAddingComponents:comps toDate:date options:0];
     
     NSDateComponents *offset = [NSDateComponents new];
     offset.day = 1;
@@ -94,19 +97,19 @@
         NSString *title = [self.dayFormatter stringFromDate:date];
         NSString *accessibilityLabel = [self.accessibilityFormatter stringFromDate:date];
         [button setTitle:title forState:UIControlStateNormal];
-        [self.calendarView.appearanceDelegate configureButton:button forNormalDate:date];
+        [self.calendarView.configuration configureButton:button forNormalDate:date];
         [button setAccessibilityLabel:accessibilityLabel];
         
         button.enabled = ![self.delegate respondsToSelector:@selector(rowCell:shouldSelectDate:)] || [self.delegate rowCell:self shouldSelectDate:date];
         
-        NSDateComponents *thisDateComponents = [self.calendarView.calendar components:NSDayCalendarUnit|NSMonthCalendarUnit|NSYearCalendarUnit fromDate:date];
+        NSDateComponents *thisDateComponents = [calendar components:NSDayCalendarUnit|NSMonthCalendarUnit|NSYearCalendarUnit fromDate:date];
         if ([self.todayDateComponents isEqual:thisDateComponents]) {
             self.indexOfTodayButton = index;
-            [self.calendarView.appearanceDelegate configureButtonForToday:button];
+            [self.calendarView.configuration configureButtonForToday:button];
         }
         
         // Next date
-        date = [self.calendarView.calendar dateByAddingComponents:offset toDate:date options:0];
+        date = [calendar dateByAddingComponents:offset toDate:date options:0];
     }
 }
 
@@ -128,10 +131,10 @@
     if (newIndexOfSelectedButton >= 0) {
         UIButton *button = self.dayButtons[newIndexOfSelectedButton];
         if(inBetween) {
-            [self.calendarView.appearanceDelegate configureButton:button forInBetweenDay:date];
+            [self.calendarView.configuration configureButton:button forInBetweenDay:date];
         }
         else {
-            [self.calendarView.appearanceDelegate configureButton:button forSelectedDate:date];
+            [self.calendarView.configuration configureButton:button forSelectedDate:date];
         }
     }
 }
@@ -144,19 +147,19 @@
 - (void) deselectAllColumns {
     for(int i = 0; i < self.dayButtons.count; i++) {
         UIButton *button = self.dayButtons[i];
-        [self.calendarView.appearanceDelegate configureButton:button forNormalDate:nil];
+        [self.calendarView.configuration configureButton:button forNormalDate:nil];
     }
 }
 
 - (NSInteger) indexOfButtonForDate:(NSDate *)date {
-    return [self.calendarView.calendar ordinalityOfUnit:NSCalendarUnitDay inUnit:NSCalendarUnitWeekOfMonth forDate:date] - 1;
+    return [self.calendarView.configuration.calendar ordinalityOfUnit:NSCalendarUnitDay inUnit:NSCalendarUnitWeekOfMonth forDate:date] - 1;
 }
 
 - (IBAction)dateButtonPressed:(id)sender;
 {
     NSDateComponents *offset = [NSDateComponents new];
     offset.day = [self.dayButtons indexOfObject:sender];
-    NSDate *selectedDate = [self.calendarView.calendar dateByAddingComponents:offset toDate:_startDate options:0];
+    NSDate *selectedDate = [self.calendarView.configuration.calendar dateByAddingComponents:offset toDate:_startDate options:0];
     if([self.delegate respondsToSelector:@selector(rowCell:didSelectDate:)])
         [self.delegate rowCell:self didSelectDate:selectedDate];
 }
@@ -165,7 +168,7 @@
 {
     NSDateComponents *offset = [NSDateComponents new];
     offset.day = self.indexOfTodayButton;
-    NSDate *selectedDate = [self.calendarView.calendar dateByAddingComponents:offset toDate:_startDate options:0];
+    NSDate *selectedDate = [self.calendarView.configuration.calendar dateByAddingComponents:offset toDate:_startDate options:0];
     if([self.delegate respondsToSelector:@selector(rowCell:didSelectDate:)])
         [self.delegate rowCell:self didSelectDate:selectedDate];
 }
@@ -186,7 +189,8 @@
 {
     if (!_dayFormatter) {
         _dayFormatter = [[NSDateFormatter alloc] init];
-        _dayFormatter.calendar = self.calendarView.calendar;
+        _dayFormatter.calendar = self.calendarView.configuration.calendar;
+        _dayFormatter.locale = self.calendarView.configuration.locale;
         _dayFormatter.dateFormat = @"d";
     }
     return _dayFormatter;
@@ -196,7 +200,8 @@
 {
     if (!_accessibilityFormatter) {
         _accessibilityFormatter = [[NSDateFormatter alloc] init];
-        _accessibilityFormatter.calendar = self.calendarView.calendar;
+        _accessibilityFormatter.calendar = self.calendarView.configuration.calendar;
+        _accessibilityFormatter.locale = self.calendarView.configuration.locale;
         _accessibilityFormatter.dateStyle = NSDateFormatterLongStyle;
     }
     return _accessibilityFormatter;
@@ -205,7 +210,7 @@
 - (NSDateComponents *)todayDateComponents;
 {
     if (!_todayDateComponents) {
-        self.todayDateComponents = [self.calendarView.calendar components:NSDayCalendarUnit|NSMonthCalendarUnit|NSYearCalendarUnit fromDate:[NSDate date]];
+        self.todayDateComponents = [self.calendarView.configuration.calendar components:NSDayCalendarUnit|NSMonthCalendarUnit|NSYearCalendarUnit fromDate:[NSDate date]];
     }
     return _todayDateComponents;
 }

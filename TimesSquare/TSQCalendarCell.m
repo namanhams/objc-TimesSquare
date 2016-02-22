@@ -9,7 +9,7 @@
 
 #import "TSQCalendarCell.h"
 #import "TSQCalendarView.h"
-
+#import "TSQCalendarConfiguration.h"
 
 @interface TSQCalendarCell ()
 
@@ -61,7 +61,7 @@
 {
     static NSUInteger daysInWeek = 0;
     if (daysInWeek == 0) {
-        daysInWeek = [self.calendarView.calendar maximumRangeOfUnit:NSWeekdayCalendarUnit].length;
+        daysInWeek = [self.calendarView.configuration.calendar maximumRangeOfUnit:NSWeekdayCalendarUnit].length;
     }
     return daysInWeek;
 }

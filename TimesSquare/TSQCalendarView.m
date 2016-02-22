@@ -10,16 +10,14 @@
 #import "TSQCalendarView.h"
 #import "TSQCalendarMonthHeaderCell.h"
 #import "TSQCalendarRowCell.h"
-#import "TSQCalendarAppearance.h"
+#import "TSQCalendarConfiguration.h"
 #import "NSDate+TimeSquare.h"
 
 @interface TSQCalendarView () <UITableViewDataSource, UITableViewDelegate, TSQCalendarRowCellDelegate> {
     NSDate *_selectedDate;
 }
-@property (nonatomic, strong) NSCalendar *calendar;
 @property (nonatomic, strong) NSDate *firstDate;
 @property (nonatomic, strong) NSDate *lastDate;
-@property (nonatomic, strong) NSLocale *locale;
 @end
 
 
@@ -71,7 +69,7 @@
 
 - (void)_TSQCalendarView_commonInit;
 {
-    self.appearanceDelegate = [[TSQCalendarAppearance alloc] init];
+    self.configuration = [[TSQCalendarConfiguration alloc] init];
 
     _tableView = [[UITableView alloc] initWithFrame:self.bounds style:UITableViewStylePlain];
     _tableView.dataSource = self;
@@ -88,36 +86,17 @@
     _tableView.delegate = nil;
 }
 
-- (NSLocale *) locale {
-    if(!_locale) {
-        NSString *localeIdentifier = [[NSBundle mainBundle] preferredLocalizations].firstObject;
-        if(localeIdentifier)
-            _locale = [NSLocale localeWithLocaleIdentifier:localeIdentifier];
-        else
-            _locale = [NSLocale currentLocale];
-    }
-    
-    return _locale;
-}
-
-- (NSCalendar *)calendar;
-{
-    if (!_calendar) {
-        _calendar = [NSCalendar currentCalendar];
-        _calendar.locale = self.locale;
-    }
-    return _calendar;
-}
-
 - (NSDateFormatter *) monthDateFormatter;
 {
     if (!_monthDateFormatter) {
         _monthDateFormatter = [[NSDateFormatter alloc] init];
-        _monthDateFormatter.calendar = self.calendar;
-        _monthDateFormatter.locale = self.locale;
+        _monthDateFormatter.calendar = self.configuration.calendar;
+        _monthDateFormatter.locale = self.configuration.locale;
         
         NSString *template = @"yyyyMMM";
-        _monthDateFormatter.dateFormat = [NSDateFormatter dateFormatFromTemplate:template options:0 locale:self.locale];
+        _monthDateFormatter.dateFormat = [NSDateFormatter dateFormatFromTemplate:template
+                                                                         options:0
+                                                                          locale:self.configuration.locale];
     }
     return _monthDateFormatter;
 }
@@ -125,11 +104,13 @@
 - (NSDateFormatter *) weekDayFormatter {
     if(! _weekDayFormatter) {
         _weekDayFormatter = [[NSDateFormatter alloc] init];
-        _weekDayFormatter.calendar = self.calendar;
-        _weekDayFormatter.locale = self.locale;
+        _weekDayFormatter.calendar = self.configuration.calendar;
+        _weekDayFormatter.locale = self.configuration.locale;
         
         NSString *template = @"EEE";
-        _weekDayFormatter.dateFormat = [NSDateFormatter dateFormatFromTemplate:template options:0 locale:self.locale];
+        _weekDayFormatter.dateFormat = [NSDateFormatter dateFormatFromTemplate:template
+                                                                       options:0
+                                                                        locale:self.configuration.locale];
     }
     
     return _weekDayFormatter;
@@ -200,11 +181,11 @@
     
     if(_selectedRange != nil) {
         // Unselected the old range
-        NSInteger numberOfDates = [self.calendar components:NSCalendarUnitDay fromDate:_selectedRange.start toDate:_selectedRange.end options:0].day;
+        NSInteger numberOfDates = [self.configuration.calendar components:NSCalendarUnitDay fromDate:_selectedRange.start toDate:_selectedRange.end options:0].day;
         NSDateComponents *components = [[NSDateComponents alloc] init];
         for(int i = 0; i <= numberOfDates; i++) {
             components.day = i;
-            NSDate *date = [self.calendar dateByAddingComponents:components toDate:_selectedRange.start options:0];
+            NSDate *date = [self.configuration.calendar dateByAddingComponents:components toDate:_selectedRange.start options:0];
             TSQCalendarRowCell *cell = [self cellForRowAtDate:date];
             [cell deselectAllColumns];
         }
@@ -215,11 +196,11 @@
     if(_selectedRange != nil) {
         _selectedRange.start = [self normalizeDateForDate:_selectedRange.start];
         _selectedRange.end = [self normalizeDateForDate:_selectedRange.end];
-        NSInteger numberOfDates = [self.calendar components:NSCalendarUnitDay fromDate:_selectedRange.start toDate:_selectedRange.end options:0].day;
+        NSInteger numberOfDates = [self.configuration.calendar components:NSCalendarUnitDay fromDate:_selectedRange.start toDate:_selectedRange.end options:0].day;
         NSDateComponents *components = [[NSDateComponents alloc] init];
         for(int i = 0; i <= numberOfDates; i++) {
             components.day = i;
-            NSDate *date = [self.calendar dateByAddingComponents:components toDate:_selectedRange.start options:0];
+            NSDate *date = [self.configuration.calendar dateByAddingComponents:components toDate:_selectedRange.start options:0];
             TSQCalendarRowCell *cell = [self cellForRowAtDate:date];
             if(i > 0 && i < numberOfDates) {
                 [cell selectColumnForDate:date isInBetween:true];
@@ -266,7 +247,7 @@
 {
     NSDateComponents *offset = [NSDateComponents new];
     offset.month = section;
-    NSDate *dateOfMonth = [self.calendar dateByAddingComponents:offset toDate:self.firstDate options:0];
+    NSDate *dateOfMonth = [self.configuration.calendar dateByAddingComponents:offset toDate:self.firstDate options:0];
     NSDate *firstDateOfMonth = [NSDate firstDateOfMonthForDate:dateOfMonth];
     if([firstDateOfMonth earlierDate:self.firstDate] == firstDateOfMonth)
         firstDateOfMonth = self.firstDate;
@@ -315,9 +296,9 @@
 - (NSInteger)sectionForDate:(NSDate *)date;
 {
     // Calculate month index
-    NSDateComponents *comps_1 = [self.calendar components:NSCalendarUnitYear | NSCalendarUnitMonth fromDate:self.firstDate];
+    NSDateComponents *comps_1 = [self.configuration.calendar components:NSCalendarUnitYear | NSCalendarUnitMonth fromDate:self.firstDate];
     NSInteger monthIndex_1 = comps_1.year * 12 + comps_1.month;
-    NSDateComponents *comps_2 = [self.calendar components:NSCalendarUnitYear | NSCalendarUnitMonth fromDate:date];
+    NSDateComponents *comps_2 = [self.configuration.calendar components:NSCalendarUnitYear | NSCalendarUnitMonth fromDate:date];
     NSInteger monthIndex_2 = comps_2.year * 12 + comps_2.month;
     
     return monthIndex_2 - monthIndex_1;
@@ -373,11 +354,11 @@
     
     if (indexPath.row > 0) {
         // Find the first date of the cell to be displayed
-        NSInteger ordinalityOfFirstDay = [self.calendar ordinalityOfUnit:NSDayCalendarUnit inUnit:NSWeekCalendarUnit forDate:firstDateOfMonth];
+        NSInteger ordinalityOfFirstDay = [self.configuration.calendar ordinalityOfUnit:NSDayCalendarUnit inUnit:NSWeekCalendarUnit forDate:firstDateOfMonth];
         NSDateComponents *dateComponents = [NSDateComponents new];
         dateComponents.day = 1 - ordinalityOfFirstDay;
         dateComponents.week = indexPath.row - 1;
-        NSDate *cellBeginningDate = [self.calendar dateByAddingComponents:dateComponents toDate:firstDateOfMonth options:0];
+        NSDate *cellBeginningDate = [self.configuration.calendar dateByAddingComponents:dateComponents toDate:firstDateOfMonth options:0];
         if([cellBeginningDate earlierDate:firstDateOfMonth] == cellBeginningDate)
             cellBeginningDate = firstDateOfMonth;
         if([cellBeginningDate laterDate:self.lastDate] == cellBeginningDate)
@@ -390,11 +371,11 @@
             [(TSQCalendarRowCell *)cell selectColumnForDate:_selectedDate];
         }
         else if(_selectedRange) {
-            NSInteger numberOfDates = [self.calendar components:NSCalendarUnitDay fromDate:_selectedRange.start toDate:_selectedRange.end options:0].day;
+            NSInteger numberOfDates = [self.configuration.calendar components:NSCalendarUnitDay fromDate:_selectedRange.start toDate:_selectedRange.end options:0].day;
             NSDateComponents *components = [[NSDateComponents alloc] init];
             for(int i = 0; i <= numberOfDates; i++) {
                 components.day = i;
-                NSDate *date = [self.calendar dateByAddingComponents:components toDate:_selectedRange.start options:0];
+                NSDate *date = [self.configuration.calendar dateByAddingComponents:components toDate:_selectedRange.start options:0];
                 if(i > 0 && i < numberOfDates) {
                     [(TSQCalendarRowCell *)cell selectColumnForDate:date isInBetween:true];
                 }
