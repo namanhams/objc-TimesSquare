@@ -8,9 +8,7 @@
 //  which Square, Inc. licenses this file to you.
 
 #import "TSQCalendarRowCell.h"
-#import "TSQCalendarView.h"
-#import "TSQCalendarConfiguration.h"
-#import "NSDate+TimeSquare.h"
+#import "TimesSquare.h"
 
 @interface TSQCalendarRowCell () {
     NSInteger _currentMonth;
@@ -64,7 +62,7 @@
     _beginningDate = date;
     _currentMonth = date.month;
     
-    NSCalendar *calendar = self.calendarView.configuration.calendar;
+    NSCalendar *calendar = TimesSquare.calendar;
     
     if (!self.dayButtons)
         [self createDayButtons];
@@ -152,14 +150,14 @@
 }
 
 - (NSInteger) indexOfButtonForDate:(NSDate *)date {
-    return [self.calendarView.configuration.calendar ordinalityOfUnit:NSCalendarUnitDay inUnit:NSCalendarUnitWeekOfMonth forDate:date] - 1;
+    return [TimesSquare.calendar ordinalityOfUnit:NSCalendarUnitDay inUnit:NSCalendarUnitWeekOfMonth forDate:date] - 1;
 }
 
 - (IBAction)dateButtonPressed:(id)sender;
 {
     NSDateComponents *offset = [NSDateComponents new];
     offset.day = [self.dayButtons indexOfObject:sender];
-    NSDate *selectedDate = [self.calendarView.configuration.calendar dateByAddingComponents:offset toDate:_startDate options:0];
+    NSDate *selectedDate = [TimesSquare.calendar dateByAddingComponents:offset toDate:_startDate options:0];
     if([self.delegate respondsToSelector:@selector(rowCell:didSelectDate:)])
         [self.delegate rowCell:self didSelectDate:selectedDate];
 }
@@ -168,7 +166,7 @@
 {
     NSDateComponents *offset = [NSDateComponents new];
     offset.day = self.indexOfTodayButton;
-    NSDate *selectedDate = [self.calendarView.configuration.calendar dateByAddingComponents:offset toDate:_startDate options:0];
+    NSDate *selectedDate = [TimesSquare.calendar dateByAddingComponents:offset toDate:_startDate options:0];
     if([self.delegate respondsToSelector:@selector(rowCell:didSelectDate:)])
         [self.delegate rowCell:self didSelectDate:selectedDate];
 }
@@ -189,8 +187,8 @@
 {
     if (!_dayFormatter) {
         _dayFormatter = [[NSDateFormatter alloc] init];
-        _dayFormatter.calendar = self.calendarView.configuration.calendar;
-        _dayFormatter.locale = self.calendarView.configuration.locale;
+        _dayFormatter.calendar = TimesSquare.calendar;
+        _dayFormatter.locale = TimesSquare.locale;
         _dayFormatter.dateFormat = @"d";
     }
     return _dayFormatter;
@@ -200,8 +198,8 @@
 {
     if (!_accessibilityFormatter) {
         _accessibilityFormatter = [[NSDateFormatter alloc] init];
-        _accessibilityFormatter.calendar = self.calendarView.configuration.calendar;
-        _accessibilityFormatter.locale = self.calendarView.configuration.locale;
+        _accessibilityFormatter.calendar = TimesSquare.calendar;
+        _accessibilityFormatter.locale = TimesSquare.locale;
         _accessibilityFormatter.dateStyle = NSDateFormatterLongStyle;
     }
     return _accessibilityFormatter;
@@ -210,7 +208,7 @@
 - (NSDateComponents *)todayDateComponents;
 {
     if (!_todayDateComponents) {
-        self.todayDateComponents = [self.calendarView.configuration.calendar components:NSDayCalendarUnit|NSMonthCalendarUnit|NSYearCalendarUnit fromDate:[NSDate date]];
+        self.todayDateComponents = [TimesSquare.calendar components:NSDayCalendarUnit|NSMonthCalendarUnit|NSYearCalendarUnit fromDate:[NSDate date]];
     }
     return _todayDateComponents;
 }

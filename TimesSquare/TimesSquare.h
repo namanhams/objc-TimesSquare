@@ -12,3 +12,13 @@
 #import "TSQCalendarView.h"
 #import "TSQCalendarConfiguration.h"
 #import "NSDate+TimeSquare.h"
+
+#import <Foundation/Foundation.h>
+
+@interface TimesSquare: NSObject
+
++ (void) setCalendar:(NSCalendar *)calendar andLocale:(NSLocale *)locale;
++ (NSCalendar *) calendar;
++ (NSLocale *) locale;
+
+@end

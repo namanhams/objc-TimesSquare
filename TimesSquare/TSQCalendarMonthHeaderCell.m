@@ -8,8 +8,7 @@
 //  which Square, Inc. licenses this file to you.
 
 #import "TSQCalendarMonthHeaderCell.h"
-#import "TSQCalendarView.h"
-#import "TSQCalendarConfiguration.h"
+#import "TimesSquare.h"
 
 static const CGFloat TSQCalendarMonthHeaderCellMonthsHeight = 20.f;
 
@@ -48,8 +47,8 @@ static const CGFloat TSQCalendarMonthHeaderCellMonthsHeight = 20.f;
     offset.day = 1;
     NSMutableArray *headerLabels = [NSMutableArray arrayWithCapacity:self.daysInWeek];
     
-    NSCalendar *calendar = self.calendarView.configuration.calendar;
-    NSLocale *locale = self.calendarView.configuration.locale;
+    NSCalendar *calendar = TimesSquare.calendar;
+    NSLocale *locale = TimesSquare.locale;
     
     NSDateFormatter *dayFormatter = [[NSDateFormatter alloc] init];
     dayFormatter.calendar = calendar;

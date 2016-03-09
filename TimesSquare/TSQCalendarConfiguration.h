@@ -39,9 +39,6 @@
 - (void) configureButton:(UIButton *)button forNormalDate:(NSDate *)date;
 - (void) configureButton:(UIButton *)button forInBetweenDay:(NSDate *)date;
 
-@property (nonatomic, strong) NSCalendar *calendar;
-@property (nonatomic, strong) NSLocale *locale;
-
 @end
 
 @interface UIImage (Extension)

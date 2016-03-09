@@ -8,8 +8,7 @@
 //  which Square, Inc. licenses this file to you.
 
 #import "TSQCalendarCell.h"
-#import "TSQCalendarView.h"
-#import "TSQCalendarConfiguration.h"
+#import "TimesSquare.h"
 
 @interface TSQCalendarCell ()
 
@@ -29,8 +28,7 @@
     
     self.calendarView = calendarView;
     
-    NSLocale *locale = calendarView.configuration.locale;
-    NSString *languageCode = [locale objectForKey:NSLocaleLanguageCode];
+    NSString *languageCode = [TimesSquare.locale objectForKey:NSLocaleLanguageCode];
     self.layoutDirection = [NSLocale characterDirectionForLanguage:languageCode];
     self.backgroundColor = [UIColor colorWithRed:0.84f green:0.85f blue:0.86f alpha:1.0f];
     
@@ -57,7 +55,7 @@
 {
     static NSUInteger daysInWeek = 0;
     if (daysInWeek == 0) {
-        daysInWeek = [self.calendarView.configuration.calendar maximumRangeOfUnit:NSWeekdayCalendarUnit].length;
+        daysInWeek = [TimesSquare.calendar maximumRangeOfUnit:NSWeekdayCalendarUnit].length;
     }
     return daysInWeek;
 }

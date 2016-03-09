@@ -11,9 +11,6 @@
 @implementation TSQCalendarConfiguration
 
 - (id) init {
-    self.calendar = [NSCalendar currentCalendar];
-    self.locale = [NSLocale currentLocale];
-    
     self.normalTextColor = [UIColor darkGrayColor];
     self.todayTextColor = [UIColor blueColor];
     self.selectedTextColor = [UIColor whiteColor];
