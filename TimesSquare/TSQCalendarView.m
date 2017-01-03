@@ -31,7 +31,7 @@
     _end = endDate;
     
     assert(_start);
-    assert(_end);
+//    assert(_end);
     
     return self;
 }
@@ -329,6 +329,7 @@
         if (!cell) {
             cell = [self makeHeaderCellWithIdentifier:identifier];
         }
+        
         return cell;
     }
     else
@@ -347,7 +348,7 @@
 #pragma mark UITableViewDelegate
 
 - (void)tableView:(UITableView *)tableView willDisplayCell:(UITableViewCell *)cell forRowAtIndexPath:(NSIndexPath *)indexPath;
-{
+{    
     NSDate *firstDateOfMonth = [self firstDateOfMonthForSection:indexPath.section];
     
     [(TSQCalendarCell *)cell setFirstOfMonth:firstDateOfMonth];
