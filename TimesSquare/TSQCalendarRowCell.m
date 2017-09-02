@@ -100,7 +100,8 @@
         
         button.enabled = ![self.delegate respondsToSelector:@selector(rowCell:shouldSelectDate:)] || [self.delegate rowCell:self shouldSelectDate:date];
         
-        NSDateComponents *thisDateComponents = [calendar components:NSDayCalendarUnit|NSMonthCalendarUnit|NSYearCalendarUnit fromDate:date];
+        NSDateComponents *thisDateComponents = [calendar components:NSCalendarUnitDay|NSCalendarUnitMonth|NSCalendarUnitYear
+                                                           fromDate:date];
         if ([self.todayDateComponents isEqual:thisDateComponents]) {
             self.indexOfTodayButton = index;
             [self.calendarView.configuration configureButtonForToday:button];
@@ -208,7 +209,8 @@
 - (NSDateComponents *)todayDateComponents;
 {
     if (!_todayDateComponents) {
-        self.todayDateComponents = [TimesSquare.calendar components:NSDayCalendarUnit|NSMonthCalendarUnit|NSYearCalendarUnit fromDate:[NSDate date]];
+        self.todayDateComponents = [TimesSquare.calendar components:NSCalendarUnitDay|NSCalendarUnitMonth|NSCalendarUnitYear
+                                                           fromDate:[NSDate date]];
     }
     return _todayDateComponents;
 }
