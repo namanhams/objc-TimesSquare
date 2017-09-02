@@ -43,30 +43,28 @@ static const CGFloat TSQCalendarMonthHeaderCellMonthsHeight = 20.f;
 - (void)createHeaderLabels;
 {
     NSDate *referenceDate = [NSDate dateWithTimeIntervalSinceReferenceDate:0];
-    NSDateComponents *offset = [NSDateComponents new];
-    offset.day = 1;
-    NSMutableArray *headerLabels = [NSMutableArray arrayWithCapacity:self.daysInWeek];
-    
     NSCalendar *calendar = TimesSquare.calendar;
-    NSLocale *locale = TimesSquare.locale;
     
     NSDateFormatter *dayFormatter = [[NSDateFormatter alloc] init];
     dayFormatter.calendar = calendar;
-    dayFormatter.locale = locale;
+    dayFormatter.locale = TimesSquare.locale;
     dayFormatter.dateFormat = @"cccccc";
     
+    NSMutableArray *headerLabels = [NSMutableArray arrayWithCapacity:self.daysInWeek];
     for (NSUInteger index = 0; index < self.daysInWeek; index++) {
         [headerLabels addObject:@""];
     }
     
+    NSDateComponents *offset = [NSDateComponents new];
+    offset.day = 1;
     for (NSUInteger index = 0; index < self.daysInWeek; index++) {
-        NSInteger ordinality = [calendar ordinalityOfUnit:NSDayCalendarUnit inUnit:NSWeekCalendarUnit forDate:referenceDate];
+        NSInteger ordinality = [calendar ordinalityOfUnit:NSCalendarUnitDay inUnit:NSCalendarUnitWeekOfMonth forDate:referenceDate];
         UILabel *label = [[UILabel alloc] initWithFrame:self.frame];
-        label.textAlignment = UITextAlignmentCenter;
+        label.textAlignment = NSTextAlignmentCenter;
         label.text = [self headerLabelForDate:referenceDate];
         label.font = [UIFont boldSystemFontOfSize:12.f];
         label.backgroundColor = self.backgroundColor;
-        label.textColor = self.textColor;
+        label.textColor = self.textLabel.textColor;
         label.shadowColor = [UIColor whiteColor];
         label.shadowOffset = self.shadowOffset;
         [label sizeToFit];
@@ -77,8 +75,8 @@ static const CGFloat TSQCalendarMonthHeaderCellMonthsHeight = 20.f;
     }
     
     self.headerLabels = headerLabels;
-    self.textLabel.textAlignment = UITextAlignmentCenter;
-    self.textLabel.textColor = self.textColor;
+    self.textLabel.textAlignment = NSTextAlignmentCenter;
+    self.textLabel.textColor = self.textLabel.textColor;
     self.textLabel.shadowColor = [UIColor whiteColor];
     self.textLabel.shadowOffset = self.shadowOffset;
 }

@@ -41,7 +41,7 @@
     });
     self.shadowOffset = shadowOffset;
     self.columnSpacing = onePixel;
-    self.textColor = [UIColor colorWithRed:0.47f green:0.5f blue:0.53f alpha:1.0f];
+    self.textLabel.textColor = [UIColor colorWithRed:0.47f green:0.5f blue:0.53f alpha:1.0f];
     
     return self;
 }
@@ -55,7 +55,7 @@
 {
     static NSUInteger daysInWeek = 0;
     if (daysInWeek == 0) {
-        daysInWeek = [TimesSquare.calendar maximumRangeOfUnit:NSWeekdayCalendarUnit].length;
+        daysInWeek = [TimesSquare.calendar maximumRangeOfUnit:NSCalendarUnitWeekday].length;
     }
     return daysInWeek;
 }

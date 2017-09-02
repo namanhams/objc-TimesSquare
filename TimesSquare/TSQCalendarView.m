@@ -355,10 +355,12 @@
     
     if (indexPath.row > 0) {
         // Find the first date of the cell to be displayed
-        NSInteger ordinalityOfFirstDay = [TimesSquare.calendar ordinalityOfUnit:NSDayCalendarUnit inUnit:NSWeekCalendarUnit forDate:firstDateOfMonth];
+        NSInteger ordinalityOfFirstDay = [TimesSquare.calendar ordinalityOfUnit:NSCalendarUnitDay
+                                                                         inUnit:NSCalendarUnitWeekOfMonth
+                                                                        forDate:firstDateOfMonth];
         NSDateComponents *dateComponents = [NSDateComponents new];
         dateComponents.day = 1 - ordinalityOfFirstDay;
-        dateComponents.week = indexPath.row - 1;
+        dateComponents.weekOfMonth = indexPath.row - 1;
         NSDate *cellBeginningDate = [TimesSquare.calendar dateByAddingComponents:dateComponents toDate:firstDateOfMonth options:0];
         if([cellBeginningDate earlierDate:firstDateOfMonth] == cellBeginningDate)
             cellBeginningDate = firstDateOfMonth;
